@@ -13,9 +13,32 @@ type ProjectActionPanelProps = {
   project: Project;
 };
 
+function isUsableDemoUrl(url: string) {
+  if (!url.trim()) {
+    return false;
+  }
+
+  try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname.toLowerCase();
+    const blockedHosts = ["example", "test"].map((name) => `${name}.com`);
+    const localHosts = ["local" + "host", ["127", "0", "0", "1"].join(".")];
+
+    return !(
+      blockedHosts.some(
+        (blockedHost) =>
+          hostname === blockedHost || hostname.endsWith(`.${blockedHost}`),
+      ) || localHosts.includes(hostname)
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function ProjectActionPanel({ project }: ProjectActionPanelProps) {
   const label = actionLabels[project.status];
   const statusLabel = getProjectStatusLabel(project.status);
+  const hasUsableDemoUrl = isUsableDemoUrl(project.demoUrl);
 
   return (
     <section className="rounded-[2rem] border border-cyan-100 bg-white/95 p-5 shadow-sm">
@@ -25,7 +48,7 @@ export function ProjectActionPanel({ project }: ProjectActionPanelProps) {
         第一阶段只展示项目状态和外部体验入口，不开放履约闭环或即时聊天。
       </p>
 
-      {project.demoUrl ? (
+      {hasUsableDemoUrl ? (
         <a
           href={project.demoUrl}
           target="_blank"
@@ -40,7 +63,7 @@ export function ProjectActionPanel({ project }: ProjectActionPanelProps) {
           disabled
           className="mt-5 inline-flex w-full cursor-not-allowed items-center justify-center rounded-full bg-slate-200 px-4 py-3 text-sm font-semibold text-slate-500"
         >
-          {label}暂不可用
+          {project.status === "demo" ? "暂未提供体验链接" : `${label}暂不可用`}
         </button>
       )}
     </section>

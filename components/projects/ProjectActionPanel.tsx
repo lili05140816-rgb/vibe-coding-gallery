@@ -18,6 +18,10 @@ function isUsableDemoUrl(url: string) {
     return false;
   }
 
+  if (url.startsWith("/") && !url.startsWith("//")) {
+    return true;
+  }
+
   try {
     const parsedUrl = new URL(url);
     const hostname = parsedUrl.hostname.toLowerCase();
@@ -39,6 +43,8 @@ export function ProjectActionPanel({ project }: ProjectActionPanelProps) {
   const label = actionLabels[project.status];
   const statusLabel = getProjectStatusLabel(project.status);
   const hasUsableDemoUrl = isUsableDemoUrl(project.demoUrl);
+  const isInternalDemoUrl =
+    project.demoUrl.startsWith("/") && !project.demoUrl.startsWith("//");
 
   return (
     <section className="rounded-[2rem] border border-cyan-100 bg-white/95 p-5 shadow-sm">
@@ -51,8 +57,8 @@ export function ProjectActionPanel({ project }: ProjectActionPanelProps) {
       {hasUsableDemoUrl ? (
         <a
           href={project.demoUrl}
-          target="_blank"
-          rel="noreferrer"
+          target={isInternalDemoUrl ? undefined : "_blank"}
+          rel={isInternalDemoUrl ? undefined : "noreferrer"}
           className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
         >
           {label}

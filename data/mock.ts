@@ -209,7 +209,7 @@ export const projects: Project[] = [
     techStack: ["PWA", "LocalStorage", "Tailwind CSS"],
     targetUsers: ["大学生", "职场新人", "想减少刷手机的人"],
     features: ["每日时长目标", "超时原因记录", "一周趋势复盘"],
-    demoUrl: "",
+    demoUrl: "/tools/phone-time-guard",
     developerId: "dev-aqi",
     views: 5340,
     likes: 421,
